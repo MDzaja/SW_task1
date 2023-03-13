@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Query Results</title>
+</head>
+<body>
+    <h1>SPARQL Results</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Make</th>
+                <th>Model</th>
+                <th>EV Type</th>
+                <th>Electric Range</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+                <tr>
+                    <td>{{ row.make }}</td>
+                    <td>{{ row.model }}</td>
+                    <td>{{ row.ev_type }}</td>
+                    <td>{{ row.electric_range }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
