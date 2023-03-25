@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c22485-14a1-421a-ae25-d66acc5b2ec4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/electric_vehicles.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/templates/recipe_titles.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/electric_vehicles/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/electric_vehicles/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,10 +77,9 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="electric_vehicles.settings" />
       </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3" />
-      <option name="SDK_NAME" value="Python 3.10.6 WSL (Ubuntu): (/usr/bin/python3)" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
@@ -114,7 +112,9 @@
       <workItem from="1678797792702" duration="402000" />
       <workItem from="1678798213376" duration="413000" />
       <workItem from="1678798713945" duration="1916000" />
-      <workItem from="1678800662543" duration="39000" />
+      <workItem from="1678800662543" duration="3474000" />
+      <workItem from="1679685202472" duration="5798000" />
+      <workItem from="1679741246279" duration="3264000" />
     </task>
     <servers />
   </component>
