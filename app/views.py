@@ -78,26 +78,6 @@ def home(request):
     return render(request, "home.html")
 
 def ingredients(request):
-
-    #
-    # # Execute the query and retrieve the results
-    # payload_query = {"query": query}
-    # res = accessor.sparql_select(body=payload_query, repo_name=repo_name)
-    # res = json.loads(res)
-    # data = {}
-    # labels = []
-    # descriptions = []
-    # for row in res['results']['bindings']:
-    #     # labels.append(row['label']['value'])
-    #     # descriptions.append(row['description']['value'])
-    #     data["labels"].append(row['label']['value'])
-    #     data["descriptions"].append(row['description']['value'])
-    #
-    # # Render the results using a template
-    # context = {"labels": labels, "descriptions": descriptions}
-    # return render(request, "food.html", context)
-
-
     query = """
         PREFIX lab: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX lr: <http://linkedrecipes.org/schema/>
@@ -132,18 +112,6 @@ def ingredients(request):
     payload_query = {"query": query}
     res = accessor.sparql_select(body=payload_query, repo_name=repo_name)
     res = json.loads(res)
-
-    # foods = []
-    # for result in res["results"]["bindings"]:
-    #     food = {
-    #         #"uri": result["uri"]["value"],
-    #         "label": result["label"]["value"],
-    #         "description": result["description"]["value"],
-    #         "food": result["food"]["value"],
-    #     #     "image": result["image"]["value"],
-    #     }
-    #     foods.append(food)
-    # return render(request, "food.html", {"foods": foods})
 
     context = {"result": res['results']['bindings']}
     return render(request, "ingredients.html", context)
