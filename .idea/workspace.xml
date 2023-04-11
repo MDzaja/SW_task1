@@ -4,6 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="33c22485-14a1-421a-ae25-d66acc5b2ec4" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/WS_task1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/WS_task1.iml" afterDir="false" />
@@ -14,6 +15,9 @@
       <change beforePath="$PROJECT_DIR$/electric_vehicles/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/electric_vehicles/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/electric_vehicles/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/electric_vehicles/urls.py" afterDir="false" />
     </list>
+=======
+    <list default="true" id="33c22485-14a1-421a-ae25-d66acc5b2ec4" name="Changes" comment="" />
+>>>>>>> 8938b34e6ef2b8e36b3bfe17d959d721dc97f9e5
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,8 +127,14 @@
       <workItem from="1678798713945" duration="1916000" />
       <workItem from="1678800662543" duration="3474000" />
       <workItem from="1679685202472" duration="5798000" />
+<<<<<<< HEAD
       <workItem from="1679741246279" duration="3264000" />
       <workItem from="1681230027231" duration="15347000" />
+=======
+      <workItem from="1679741246279" duration="3432000" />
+      <workItem from="1681205675832" duration="1515000" />
+      <workItem from="1681207228554" duration="1185000" />
+>>>>>>> 8938b34e6ef2b8e36b3bfe17d959d721dc97f9e5
     </task>
     <servers />
   </component>
