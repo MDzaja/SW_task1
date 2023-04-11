@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+    <h1>Categories</h1>
+    <ul>
+
+        <div class="card-row">
+                {% for obj in result %}
+                  <div class="card backColor">
+                    <h2>{{ obj.prefLabel.value }}</h2>
+                  </div>
+                 {% endfor %}
+        </div>
+    </ul>
+{% endblock %}

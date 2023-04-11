@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Ingredients{% endblock %}
+
+{% block content %}
+    <h1>Ingredients</h1>
+    <ul>
+            <div class="card-row">
+                {% for obj in result %}
+                  <div class="card">
+                    <img src="{{ obj.depiction.value }}" alt="Image 1">
+                    <h2>{{ obj.label.value }}</h2>
+                    <p>{{ obj.description.value }}</p>
+                  </div>
+                 {% endfor %}
+            </div>
+
+    </ul>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Techniques
+{% endblock %}
+
+{% block content %}
+    <h1>Techniques</h1>
+    <ul>
+        <div class="card-row">
+                {% for obj in result %}
+                  <div class="card">
+                    <img src="{{ obj.techImg.value }}" alt="Image 1">
+                    <h2>{{ obj.techName.value }}</h2>
+                    <p>{{ obj.techDescription.value }}</p>
+                  </div>
+                 {% endfor %}
+            </div>
+    </ul>
+{% endblock %}
