@@ -19,8 +19,12 @@ from app import views
 
 urlpatterns = [
     path('recipes/', views.recipes, name='recipes'),
+    #path('food/', views.foodView, name='food'),
+    path('add-ingredient/', views.add_ingredient, name='add_ingredient'),
+    path('update-ingredient/', views.update_ingredient, name='update_ingredient'),
+    path('delete-ingredient/', views.delete_ingredient, name='delete_ingredient'),
     path('', views.home, name='home'),
-    path('ingredients', views.ingredients, name='ingredients'),
-    path('categories', views.categories, name='categories'),
-    path('techniques', views.techniques, name='techniques')
+    path('ingredients/', views.ingredients, name='ingredients'),
+    path('categories/', views.categories, name='categories'),
+    path('techniques/', views.techniques, name='techniques')
 ]

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Ingredient</title>
+</head>
+<body>
+    <h1>Add New Ingredient</h1>
+    <form method="POST" action="/add-ingredient/">
+        {% csrf_token %}
+        <label for="label">Label:</label>
+        <input type="text" id="label" name="label"><br><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+
+
+
+

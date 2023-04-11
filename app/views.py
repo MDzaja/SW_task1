@@ -3,36 +3,15 @@ from rdflib import Graph
 import json
 from s4api.graphdb_api import GraphDBApi
 from s4api.swagger import ApiClient
+from SPARQLWrapper import SPARQLWrapper, JSON
+from django.shortcuts import redirect
+import uuid
 
 from app.repositories.categoryrepo import getDistinctCategoryLabels
 from app.repositories.foodrepo import getDistinctIngredientLabels
 from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes
 from app.repositories.techniquerepo import getDistinctTechniqueLabels
 
-
-def vehicle(request):
-    # Load the RDF data
-    g = Graph()
-    g.parse("data_processed.rdf")
-
-    # Define the SPARQL query
-    query = """
-        PREFIX ds: <https://data.wa.gov/resource/f6w7-q2d2/>
-        SELECT ?make ?model ?ev_type ?electric_range
-        WHERE {
-            ?s ds:make ?make .
-            ?s ds:model ?model .
-            ?s ds:ev_type ?ev_type .
-            ?s ds:electric_range ?electric_range .
-        }
-    """
-
-    # Execute the SPARQL query
-    results = g.query(query)
-
-    # Render the results using a template
-    context = {"results": results}
-    return render(request, "vehicle_details.html", context)
 
 def recipeTitle(request):
     # Create a connection to the GraphDB repository
@@ -75,7 +54,8 @@ def recipes(request):
     searchTitle = request.GET.get('searchTitle', None)
     offset = request.GET.get('offset', 0)
 
-    recipes = getCompactRecipes(offset=offset, limit=30, searchTitle=searchTitle, categoryList=selectedCategoryList, techniqueList=selectedTechniqueList, ingredientList=selectedIngredientList)
+    recipes = getCompactRecipes(offset=offset, limit=30, searchTitle=searchTitle, categoryList=selectedCategoryList,
+                                techniqueList=selectedTechniqueList, ingredientList=selectedIngredientList)
     categoryList = getDistinctCategoryLabels()
     techniqueList = getDistinctTechniqueLabels()
     ingredientList = getDistinctIngredientLabels()
@@ -93,42 +73,184 @@ def recipes(request):
 
     return render(request, "recipes.html", context)
 
+
 def home(request):
     return render(request, "home.html")
 
-
 def ingredients(request):
-    # Create a connection to the GraphDB repository
-    endpoint = "http://localhost:7200"
-    repo_name = "WS-foodista"
-    client = ApiClient(endpoint=endpoint)
-    accessor = GraphDBApi(client)
 
-    # SPARQL query to retrieve data from GraphDB
+    #
+    # # Execute the query and retrieve the results
+    # payload_query = {"query": query}
+    # res = accessor.sparql_select(body=payload_query, repo_name=repo_name)
+    # res = json.loads(res)
+    # data = {}
+    # labels = []
+    # descriptions = []
+    # for row in res['results']['bindings']:
+    #     # labels.append(row['label']['value'])
+    #     # descriptions.append(row['description']['value'])
+    #     data["labels"].append(row['label']['value'])
+    #     data["descriptions"].append(row['description']['value'])
+    #
+    # # Render the results using a template
+    # context = {"labels": labels, "descriptions": descriptions}
+    # return render(request, "food.html", context)
+
+
     query = """
         PREFIX lab: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX lr: <http://linkedrecipes.org/schema/>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX dep: <http://xmlns.com/foaf/0.1/>
         PREFIX des: <http://purl.org/dc/terms/>
-        SELECT ?label ?depiction ?description
+        SELECT ?food ?label ?depiction ?description
         WHERE {
           ?food a lr:Food .
             ?food lab:label ?label .
             ?food dep:depiction ?depiction .
             ?food des:description ?description .
-                  
+
         } LIMIT 20
         """
+#     query = """
+# PREFIX dc: <http://purl.org/dc/terms/>
+# PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT ?label ?description ?food WHERE {
+#   ?food dc:description "Pasta spageti" .
+#   ?food rdfs:label ?label .
+#   ?food a <http://linkedrecipes.org/schema/Food> .
+#   ?food dc:description ?description .
+# }
+# """
 
-    # Execute the query and retrieve the results
+    endpoint = "http://localhost:7200"
+    repo_name = "WS-foodista"
+    client = ApiClient(endpoint=endpoint)
+    accessor = GraphDBApi(client)
+
     payload_query = {"query": query}
     res = accessor.sparql_select(body=payload_query, repo_name=repo_name)
-    print(res)
     res = json.loads(res)
-    titles = []
+
+    # foods = []
+    # for result in res["results"]["bindings"]:
+    #     food = {
+    #         #"uri": result["uri"]["value"],
+    #         "label": result["label"]["value"],
+    #         "description": result["description"]["value"],
+    #         "food": result["food"]["value"],
+    #     #     "image": result["image"]["value"],
+    #     }
+    #     foods.append(food)
+    # return render(request, "food.html", {"foods": foods})
 
     context = {"result": res['results']['bindings']}
     return render(request, "ingredients.html", context)
+
+
+def add_ingredient(request):
+    if request.method == 'POST':
+        label = request.POST.get('label')
+        description = request.POST.get('description')
+        myuuid = "<http://data.kasabi.com/dataset/foodista/food/" + str(uuid.uuid4()) + ">"
+
+        query = """
+        PREFIX dc: <http://purl.org/dc/terms/>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX lr: <http://linkedrecipes.org/schema/>
+
+        INSERT DATA
+        {
+            %s rdf:type lr:Food ;
+                dc:description "%s" ;
+                rdfs:label "%s" .
+        }
+        """ % (myuuid, description, label)
+
+        endpoint = SPARQLWrapper('http://localhost:7200/repositories/WS-foodista/statements')
+        endpoint.setMethod('POST')
+        endpoint.setRequestMethod('urlencoded')
+        endpoint.setQuery(query)
+        result = endpoint.query()
+
+        return redirect("/ingredients/")
+
+    return render(request, "add_ingredient.html")
+
+
+def update_ingredient(request):
+    if request.method == 'POST':
+        food_uri = request.POST['food_uri']
+        label = request.POST['label']
+        description = request.POST['description']
+
+        sparql = SPARQLWrapper('http://localhost:7200/repositories/WS-foodista/statements')
+
+        sparql.setQuery(f'''
+            PREFIX dc: <http://purl.org/dc/terms/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+            DELETE {{ <{food_uri}> rdfs:label ?label . <{food_uri}> dc:description ?description . }}
+            INSERT {{ <{food_uri}> rdfs:label "{label}" . <{food_uri}> dc:description "{description}" . }}
+            WHERE {{
+                <{food_uri}> rdfs:label ?label .
+                <{food_uri}> dc:description ?description .
+            }}
+        ''')
+        sparql.method = 'POST'
+        sparql.setReturnFormat(JSON)
+        result = sparql.query().convert()
+
+        return redirect('/ingredients/')
+
+    else:
+        food_uri = request.GET['food_uri']
+
+        sparql = SPARQLWrapper('http://localhost:7200/repositories/WS-foodista')
+
+        sparql.setQuery(f'''
+            PREFIX dc: <http://purl.org/dc/terms/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+            SELECT ?label ?description
+            WHERE {{
+                <{food_uri}> rdfs:label ?label .
+                <{food_uri}> dc:description ?description .
+            }}
+        ''')
+        sparql.method = 'POST'
+        sparql.setReturnFormat(JSON)
+        result = sparql.query().convert()
+
+        label = result['results']['bindings'][0]['label']['value']
+        description = result['results']['bindings'][0]['description']['value']
+
+        return render(request, 'update_ingredient.html', {'food_uri': food_uri, 'label': label, 'description': description})
+
+def delete_ingredient(request):
+    if request.method == 'POST':
+        food_uri = request.POST['food_uri']
+
+        sparql = SPARQLWrapper('http://localhost:7200/repositories/WS-foodista/statements')
+
+        sparql.setQuery(f'''
+            PREFIX dc: <http://purl.org/dc/terms/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+            DELETE {{ <{food_uri}> rdfs:label ?label . <{food_uri}> dc:description ?description . }}
+            WHERE {{
+                <{food_uri}> rdfs:label ?label .
+                <{food_uri}> dc:description ?description .
+            }}
+        ''')
+        sparql.method = 'POST'
+        sparql.setReturnFormat(JSON)
+        result = sparql.query().convert()
+
+        return redirect('/ingredients/')
 
 
 def categories(request):
@@ -159,6 +281,7 @@ def categories(request):
 
     context = {"result": res['results']['bindings']}
     return render(request, "categories.html", context)
+
 
 def techniques(request):
     # Create a connection to the GraphDB repository
