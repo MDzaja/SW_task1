@@ -75,7 +75,7 @@ def recipes(request):
     searchTitle = request.GET.get('searchTitle', None)
     offset = request.GET.get('offset', 0)
 
-    recipes = getCompactRecipes(offset=offset, limit=1000, searchTitle=searchTitle, categoryList=selectedCategoryList, techniqueList=selectedTechniqueList, ingredientList=selectedIngredientList)
+    recipes = getCompactRecipes(offset=offset, limit=30, searchTitle=searchTitle, categoryList=selectedCategoryList, techniqueList=selectedTechniqueList, ingredientList=selectedIngredientList)
     categoryList = getDistinctCategoryLabels()
     techniqueList = getDistinctTechniqueLabels()
     ingredientList = getDistinctIngredientLabels()
