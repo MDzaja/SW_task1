@@ -20,4 +20,5 @@ from app import views
 urlpatterns = [
     path('vehicle/', views.vehicle, name='vehicle'),
     path('recipe-titles/', views.recipeTitle, name='recipeTitle'),
+    path('recipes/', views.recipes, name='recipes'),
 ]

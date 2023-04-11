@@ -4,6 +4,12 @@ import json
 from s4api.graphdb_api import GraphDBApi
 from s4api.swagger import ApiClient
 
+from app.repositories.categoryrepo import getDistinctCategoryLabels
+from app.repositories.foodrepo import getDistinctIngredientLabels
+from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes
+from app.repositories.techniquerepo import getDistinctTechniqueLabels
+
+
 def vehicle(request):
     # Load the RDF data
     g = Graph()
@@ -58,3 +64,31 @@ def recipeTitle(request):
     # Render the results using a template
     context = {"titles": titles}
     return render(request, "recipe_titles.html", context)
+
+def recipes(request):
+    selectedCategoryList = request.GET.get('selected_categories', '').split(',')
+    selectedTechniqueList = request.GET.get('selected_techniques', '').split(',')
+    selectedIngredientList = request.GET.get('selected_ingredients', '').split(',')
+    selectedCategoryList = list(filter(None, selectedCategoryList))
+    selectedTechniqueList = list(filter(None, selectedTechniqueList))
+    selectedIngredientList = list(filter(None, selectedIngredientList))
+    searchTitle = request.GET.get('searchTitle', None)
+    offset = request.GET.get('offset', 0)
+
+    recipes = getCompactRecipes(offset=offset, limit=1000, searchTitle=searchTitle, categoryList=selectedCategoryList, techniqueList=selectedTechniqueList, ingredientList=selectedIngredientList)
+    categoryList = getDistinctCategoryLabels()
+    techniqueList = getDistinctTechniqueLabels()
+    ingredientList = getDistinctIngredientLabels()
+
+    context = {
+        "recipe_list": recipes,
+        "category_list": categoryList,
+        "technique_list": techniqueList,
+        "ingredient_list": ingredientList,
+        "selected_categories": selectedCategoryList,
+        "selected_techniques": selectedTechniqueList,
+        "selected_ingredients": selectedIngredientList,
+        "offset": offset
+    }
+
+    return render(request, "recipes.html", context)

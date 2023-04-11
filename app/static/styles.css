@@ -1,0 +1,21 @@
+.search-box::placeholder {
+    color: lightgray;
+}
+
+.dropdown-menu {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.filter-section {
+    margin-bottom: 1rem;
+}
+
+.apply-filters-btn {
+    float: right;
+}
+
+.scrollable {
+    max-height: 6em;
+    overflow-y: auto;
+}

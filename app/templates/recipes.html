@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Recipes</h1>
+        <form method="POST" id="filtersForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="search-box form-control" name="searchTitle" placeholder="Recipe title">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filters
+                </button>
+                <div class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <div class="filter-section" data-filter-type="category">
+                        <h6>Categories</h6>
+                        <input type="text" class="form-control" placeholder="Search categories">
+                        <h6 style="display: none;">Selected Categories</h6>
+                        <div class="selected-filters scrollable">
+                            <!-- Display selected categories here -->
+                        </div>
+                        <div class="filter-list scrollable">
+                            <!-- Display the list of categories here -->
+                        </div>
+                    </div>
+                    <div class="filter-section" data-filter-type="technique">
+                        <h6>Techniques</h6>
+                        <input type="text" class="form-control" placeholder="Search techniques">
+                        <h6 style="display: none;">Selected Techniques</h6>
+                        <div class="selected-filters scrollable">
+                            <!-- Display selected techniques here -->
+                        </div>
+                        <div class="filter-list scrollable">
+                            <!-- Display the list of techniques here -->
+                        </div>
+                    </div>
+                    <div class="filter-section" data-filter-type="ingredient">
+                        <h6>Ingredients</h6>
+                        <input type="text" class="form-control" placeholder="Search ingredients">
+                        <h6 style="display: none;">Selected Ingredients</h6>
+                        <div class="selected-filters scrollable">
+                            <!-- Display selected ingredients here -->
+                        </div>
+                        <div class="filter-list scrollable">
+                            <!-- Display the list of ingredients here -->
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary apply-filters-btn">Apply</button>
+                </div>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Servings</th>
+                    <th>Categories</th>
+                    <th>Ingredients</th>
+                    <th>Techniques</th>
+                </tr>
+            </thead>
+            <tbody>
+                                {% for recipe in recipe_list %}
+                <tr>
+                    <td>{{ recipe.title }}</td>
+                    <td>{{ recipe.servings }}</td>
+                    <td>{{ recipe.categories }}</td>
+                    <td>{{ recipe.ingredients }}</td>
+                    <td>{{ recipe.techniques }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function() {
+            const categoryList = {{ category_list|safe }};
+            const techniqueList = {{ technique_list|safe }};
+            const ingredientList = {{ ingredient_list|safe }};
+
+            function displayItems(items, filterType) {
+                const filterList = $(`.filter-section[data-filter-type="${filterType}"] .filter-list`);
+                filterList.empty();
+                items.forEach(item => {
+                    filterList.append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${item}" id="${filterType}-${item}">
+                            <label class="form-check-label" for="${filterType}-${item}">
+                                ${item}
+                            </label>
+                        </div>
+                    `);
+                });
+            }
+
+            function filterItems(searchText, itemList) {
+                return itemList.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
+            }
+
+            function displaySelectedItems(filterType) {
+                const selectedFilters = $(`.filter-section[data-filter-type="${filterType}"] .selected-filters`);
+                selectedFilters.empty();
+                let itemCount = 0;
+                $(`.filter-section[data-filter-type="${filterType}"] input[type="checkbox"]:checked`).each(function() {
+                    itemCount++;
+                    const item = $(this).val();
+                    selectedFilters.append(`
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-1">${item}</span>
+                            <button class="btn btn-sm btn-danger ms-2" data-filter-type="${filterType}" data-item="${item}">X</button>
+                        </div>
+                    `);
+                });
+                if (itemCount > 0) {
+                    selectedFilters.prev('h6').show();
+                } else {
+                    selectedFilters.prev('h6').hide();
+                }
+            }
+
+            $('.apply-filters-btn').on('click', function() {
+                let selectedCategories = [];
+                let selectedTechniques = [];
+                let selectedIngredients = [];
+
+                $(`.filter-section[data-filter-type="category"] input[type="checkbox"]:checked`).each(function() {
+                    selectedCategories.push($(this).val());
+                });
+
+                $(`.filter-section[data-filter-type="technique"] input[type="checkbox"]:checked`).each(function() {
+                    selectedTechniques.push($(this).val());
+                });
+
+                $(`.filter-section[data-filter-type="ingredient"] input[type="checkbox"]:checked`).each(function() {
+                    selectedIngredients.push($(this).val());
+                });
+
+                // Pass the selected filters as GET parameters and submit the form
+                const searchTitle = $('input[name="searchTitle"]').val();
+                const urlParams = new URLSearchParams(window.location.search);
+
+                urlParams.set('searchTitle', searchTitle);
+                urlParams.set('selected_categories', selectedCategories.join(','));
+                urlParams.set('selected_techniques', selectedTechniques.join(','));
+                urlParams.set('selected_ingredients', selectedIngredients.join(','));
+
+                window.location.search = urlParams.toString();
+            });
+
+            $('.filter-section').on('change', 'input[type="checkbox"]', function() {
+                const filterType = $(this).closest('.filter-section').data('filter-type');
+                displaySelectedItems(filterType);
+            });
+
+            $('.filter-section').on('click', '.selected-filters button', function(event) {
+                // Prevent the event from propagating and closing the filter menu
+                event.stopPropagation();
+
+                // Get the filter type and item value from the clicked button's data attributes
+                const filterType = $(this).data('filter-type');
+                const item = $(this).data('item');
+
+                // Uncheck the corresponding checkbox for the item in the filter list
+                $(`input[type="checkbox"][id="${filterType}-${item}"]`).prop('checked', false);
+
+                // Remove the item's div from the list of selected items
+                $(this).parent().remove();
+
+                // Hide the title if there are no more selected items in the section
+                const selectedFilters = $(`.filter-section[data-filter-type="${filterType}"] .selected-filters`);
+                if (selectedFilters.children().length === 0) {
+                    selectedFilters.prev('h6').hide();
+                }
+            });
+
+            $('.filter-section input[type="text"].form-control').on('input', function() {
+                const searchText = $(this).val();
+                const filterType = $(this).closest('.filter-section').data('filter-type');
+                let itemList;
+
+                if (filterType === 'category') {
+                    itemList = categoryList;
+                } else if (filterType === 'technique') {
+                    itemList = techniqueList;
+                } else if (filterType === 'ingredient') {
+                    itemList = ingredientList;
+                }
+
+                const filteredItems = filterItems(searchText, itemList);
+                displayItems(filteredItems, filterType);
+            });
+
+            $('button[type="submit"].btn-primary').on('click', function(event) {
+                event.preventDefault();
+                $('.apply-filters-btn').trigger('click');
+            });
+
+            displayItems(categoryList, 'category');
+            displayItems(techniqueList, 'technique');
+            displayItems(ingredientList, 'ingredient');
+        });
+    </script>
+</body>
+</html>
+
+
