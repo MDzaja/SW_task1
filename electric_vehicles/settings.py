@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'app.apps.AppConfig',
     'electric_vehicles',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

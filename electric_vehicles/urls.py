@@ -20,4 +20,9 @@ from app import views
 urlpatterns = [
     path('vehicle/', views.vehicle, name='vehicle'),
     path('recipe-titles/', views.recipeTitle, name='recipeTitle'),
+    path('', views.home, name='home'),
+    path('ingredients', views.ingredients, name='ingredients'),
+    path('categories', views.categories, name='categories'),
+    path('techniques', views.techniques, name='techniques')
+
 ]
