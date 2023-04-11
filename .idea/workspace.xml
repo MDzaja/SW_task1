@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33c22485-14a1-421a-ae25-d66acc5b2ec4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_foodista.nt" beforeDir="false" />
-    </list>
+    <list default="true" id="33c22485-14a1-421a-ae25-d66acc5b2ec4" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,7 +111,7 @@
       <workItem from="1679685202472" duration="5798000" />
       <workItem from="1679741246279" duration="3432000" />
       <workItem from="1681205675832" duration="1515000" />
-      <workItem from="1681207228554" duration="843000" />
+      <workItem from="1681207228554" duration="1185000" />
     </task>
     <servers />
   </component>
