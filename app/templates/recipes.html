@@ -14,7 +14,7 @@
 <body>
     <div class="container">
         <h1>Recipes</h1>
-        <form method="POST" id="filtersForm">
+        <form method="GET" id="filtersForm">
             {% csrf_token %}
             <div class="form-group">
                 <input type="text" class="search-box form-control" name="searchTitle" placeholder="Recipe title">
