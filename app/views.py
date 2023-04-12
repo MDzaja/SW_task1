@@ -12,38 +12,6 @@ from app.repositories.foodrepo import getDistinctIngredientLabels
 from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes, getRecipeById
 from app.repositories.techniquerepo import getDistinctTechniqueLabels
 
-
-def recipeTitle(request):
-    # Create a connection to the GraphDB repository
-    endpoint = "http://localhost:7200"
-    repo_name = "WS-foodista"
-    client = ApiClient(endpoint=endpoint)
-    accessor = GraphDBApi(client)
-
-    # SPARQL query to retrieve data from GraphDB
-    query = """
-    PREFIX dcterms: <http://purl.org/dc/terms/>
-    PREFIX lr: <http://linkedrecipes.org/schema/>
-    
-    SELECT ?title
-    WHERE {
-      ?recipe a lr:Recipe ;
-              dcterms:title ?title .
-    } LIMIT 20
-    """
-
-    # Execute the query and retrieve the results
-    payload_query = {"query": query}
-    res = accessor.sparql_select(body=payload_query, repo_name=repo_name)
-    res = json.loads(res)
-    titles = []
-    for row in res['results']['bindings']:
-        titles.append(row['title']['value'])
-
-    # Render the results using a template
-    context = {"titles": titles}
-    return render(request, "recipe_titles.html", context)
-
 def recipes(request):
     selectedCategoryList = request.GET.get('selected_categories', '').split(',')
     selectedTechniqueList = request.GET.get('selected_techniques', '').split(',')
