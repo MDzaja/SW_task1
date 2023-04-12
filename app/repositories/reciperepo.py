@@ -32,21 +32,21 @@ def getCompactRecipes(offset=0, limit=20, searchTitle=None, categoryList=None, t
       ?recipe rdf:type lr:Recipe .
       ?recipe rdft:title ?title .
       ?recipe lr:servings ?servings .
-      
+    
       ?recipe lr:category ?category .
       ?category skos:prefLabel ?category_label .
-      
+    
       ?recipe lr:ingredient ?ingredient .
       ?ingredient rdfs:label ?ingredient_label .
-      
+    
       ?recipe lr:uses ?technique .
       ?technique rdfs:label ?technique_label .
-      
+    
       {ingredient_filters}
-      {("FILTER (?category_label in (" + category_list_string + "))") if categoryList else ""}
-      {("FILTER (?technique_label in (" + technique_list_string + "))") if techniqueList else ""}
       {("FILTER (REGEX(?title, '.*" + search_title + ".*', 'i'))") if searchTitle else ""}
-      
+    
+      {("FILTER EXISTS {{ ?recipe lr:category ?required_category . ?required_category skos:prefLabel ?required_category_label . FILTER (?required_category_label in (" + category_list_string + ")) }}") if categoryList else ""}
+      {("FILTER EXISTS {{ ?recipe lr:uses ?required_technique . ?required_technique rdfs:label ?required_technique_label . FILTER (?required_technique_label in (" + technique_list_string + ")) }}") if techniqueList else ""}
     }}
     GROUP BY ?recipe ?title ?servings
     ORDER BY ?recipe
