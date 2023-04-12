@@ -6,13 +6,11 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 
 def getDistinctIngredientLabels():
-    # Create a connection to the GraphDB repository
     endpoint = "http://localhost:7200"
     client = ApiClient(endpoint=endpoint)
     conn = GraphDBApi(client)
     repo_name = "WS-foodista"
 
-    # SPARQL query to retrieve data from GraphDB
     query = """
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -48,23 +46,13 @@ def getIngredients(request):
         WHERE {
           ?food a lr:Food .
             ?food lab:label ?label .
-            ?food dep:depiction ?depiction .
             ?food des:description ?description .
+            OPTIONAL{?food dep:depiction ?depiction .}
 
         }
-        ORDER BY ?label 
+        ORDER BY ?label
         LIMIT 20
         """
-#     query = """
-# PREFIX dc: <http://purl.org/dc/terms/>
-# PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-# SELECT ?label ?description ?food WHERE {
-#   ?food dc:description "Pasta spageti" .
-#   ?food rdfs:label ?label .
-#   ?food a <http://linkedrecipes.org/schema/Food> .
-#   ?food dc:description ?description .
-# }
-# """
 
     endpoint = "http://localhost:7200"
     repo_name = "WS-foodista"
@@ -82,20 +70,20 @@ def getIngredients(request):
 def addIngredient(request):
         label = request.POST.get('label')
         description = request.POST.get('description')
-        myuuid = "<http://data.kasabi.com/dataset/foodista/food/" + str(uuid.uuid4()) + ">"
+        myuuid = "<http://data.kasabi.com/dataset/foodista/food/" + str(uuid.uuid4())[0:8] + ">"
 
         query = """
-        PREFIX dc: <http://purl.org/dc/terms/>
+        PREFIX des: <http://purl.org/dc/terms/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX lab: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX lr: <http://linkedrecipes.org/schema/>
 
         INSERT DATA
         {
             %s rdf:type lr:Food ;
-                dc:description "%s" ;
-                rdfs:label "%s" .
+                des:description "%s" ;
+                lab:label "%s" .
         }
         """ % (myuuid, description, label)
 
