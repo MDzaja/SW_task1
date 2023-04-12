@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Ingredients</h1>
+    <a href="/add-ingredient"><button>Add New Ingredient</button></a>
     <ul>
             <div class="card-row">
                 {% for obj in result %}
@@ -11,6 +12,12 @@
                     <img src="{{ obj.depiction.value }}" alt="Image 1">
                     <h2>{{ obj.label.value }}</h2>
                     <p>{{ obj.description.value }}</p>
+                    <a href="/update-ingredient?food_uri={{ obj.food.value }}"><button>Update</button></a>
+                    <form action="/delete-ingredient/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="food_uri" value="{{ obj.food.value }}">
+                        <button type="submit">Delete</button>
+                    </form>
                   </div>
                  {% endfor %}
             </div>
