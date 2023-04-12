@@ -70,7 +70,8 @@ def getIngredients(request):
 def addIngredient(request):
         label = request.POST.get('label')
         description = request.POST.get('description')
-        myuuid = "<http://data.kasabi.com/dataset/foodista/food/" + str(uuid.uuid4())[0:8] + ">"
+        myuuid = "<http://data.kasabi.com/dataset/foodista/food/" + str(uuid.uuid4()) + ">"
+        img = "http://cloud.foodista.com/content/misc/placeholders/food_big"
 
         query = """
         PREFIX des: <http://purl.org/dc/terms/>
@@ -83,9 +84,10 @@ def addIngredient(request):
         {
             %s rdf:type lr:Food ;
                 des:description "%s" ;
-                lab:label "%s" .
+                lab:label "%s" ;
+                foaf:depiction  "%s" .
         }
-        """ % (myuuid, description, label)
+        """ % (myuuid, description, label, img)
 
         endpoint = SPARQLWrapper('http://localhost:7200/repositories/WS-foodista/statements')
         endpoint.setMethod('POST')
