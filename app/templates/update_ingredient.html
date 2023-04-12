@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Food Item</title>
+</head>
+<body>
+    <h1>Update Food Item</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="label">Label:</label>
+        <input type="text" name="label" value="{{ label }}">
+        <br><br>
+        <label for="description">Description:</label>
+        <input type="text" name="description" value="{{ description }}">
+        <br><br>
+        <input type="hidden" name="food_uri" value="{{ food_uri }}">
+        <br><br>
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>
