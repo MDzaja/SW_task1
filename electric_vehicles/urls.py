@@ -20,7 +20,6 @@ from app import views
 urlpatterns = [
     path('recipes/', views.recipes, name='recipes'),
     path('recipe/<recipe_id>', views.recipe_details, name='recipe_details'),
-    #path('food/', views.foodView, name='food'),
     path('add-ingredient/', views.add_ingredient, name='add_ingredient'),
     path('update-ingredient/', views.update_ingredient, name='update_ingredient'),
     path('delete-ingredient/', views.delete_ingredient, name='delete_ingredient'),

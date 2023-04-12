@@ -4,23 +4,28 @@
 
 {% block content %}
     <h1>Ingredients</h1>
-    <a href="/add-ingredient"><button>Add New Ingredient</button></a>
+    <a href="/add-ingredient"><button class="btn btn--primary" style="background-color: #4CAF50; color: white;">Add New Ingredient</button></a>
     <ul>
-            <div class="card-row">
-                {% for obj in result %}
-                  <div class="card">
+        <div class="card-row">
+            {% for obj in result %}
+                <div class="card">
                     <img src="{{ obj.depiction.value }}" alt="Image 1">
                     <h2>{{ obj.label.value }}</h2>
                     <p>{{ obj.description.value }}</p>
-                    <a href="/update-ingredient?food_uri={{ obj.food.value }}"><button>Update</button></a>
-                    <form action="/delete-ingredient/" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="food_uri" value="{{ obj.food.value }}">
-                        <button type="submit">Delete</button>
-                    </form>
-                  </div>
-                 {% endfor %}
-            </div>
-
+                    <div class="card__buttons">
+                        <a href="/update-ingredient?food_uri={{ obj.food.value }}"><button class="btn btn--primary" style="background-color: #4CAF50; color: white;">Update</button></a>
+                        <form action="/delete-ingredient/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="food_uri" value="{{ obj.food.value }}">
+                            <button class="btn btn--danger" type="submit" style="background-color: #4CAF50; color: white;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </ul>
 {% endblock %}
+
+
+
+

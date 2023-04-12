@@ -1,22 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add New Ingredient</title>
-</head>
-<body>
-    <h1>Add New Ingredient</h1>
-    <form method="POST" action="/add-ingredient/">
-        {% csrf_token %}
-        <label for="label">Label:</label>
-        <input type="text" id="label" name="label"><br><br>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description"></textarea><br><br>
-        <input type="submit" value="Submit">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
 
+{% block title %}Add Ingredient{% endblock %}
 
-
-
-
+{% block content %}
+<div class="container">
+<h1 class="heading-primary">Add New Ingredient</h1>
+<form class="form" method="POST" action="/add-ingredient/">
+{% csrf_token %}
+<div class="form__group">
+<label class="form__label" for="label">Label:</label>
+<div class="form__input-wrapper">
+<input class="form__input" type="text" id="label" name="label" required>
+</div>
+</div>
+<div class="form__group">
+<label class="form__label" for="description">Description:</label>
+<div class="form__input-wrapper">
+<textarea class="form__textarea" id="description" name="description" required></textarea>
+</div>
+</div>
+<div class="form__group">
+<button class="btn btn--primary" type="submit" style="background-color: #4CAF50; color: white;">Submit</button>
+</div>
+</form>
+</div>
+{% endblock %}
