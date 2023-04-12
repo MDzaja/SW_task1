@@ -19,3 +19,15 @@
     max-height: 6em;
     overflow-y: auto;
 }
+
+.ingredient {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.ingredient img {
+    max-width: 150px;
+    max-height: 150px;
+    margin-right: 10px;
+}

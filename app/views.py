@@ -6,7 +6,7 @@ from s4api.swagger import ApiClient
 
 from app.repositories.categoryrepo import getDistinctCategoryLabels
 from app.repositories.foodrepo import getDistinctIngredientLabels
-from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes
+from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes, getRecipeById
 from app.repositories.techniquerepo import getDistinctTechniqueLabels
 
 
@@ -92,6 +92,11 @@ def recipes(request):
     }
 
     return render(request, "recipes.html", context)
+
+def recipe_details(request, recipe_id):
+    recipe = getRecipeById(recipe_id=recipe_id)
+    context = {"recipe": recipe}
+    return render(request, "recipe_details.html", context)
 
 def home(request):
     return render(request, "home.html")

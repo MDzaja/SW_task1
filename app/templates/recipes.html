@@ -75,7 +75,7 @@
             <tbody>
                                 {% for recipe in recipe_list %}
                 <tr>
-                    <td>{{ recipe.title }}</td>
+                    <td><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></td>
                     <td>{{ recipe.servings }}</td>
                     <td>{{ recipe.categories }}</td>
                     <td>{{ recipe.ingredients }}</td>

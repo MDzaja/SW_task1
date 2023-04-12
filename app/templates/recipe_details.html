@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h1>{{ recipe.title }}</h1>
+    <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+
+    <h2>Categories</h2>
+    <ul>
+        {% for category in recipe.categories %}
+        <li>{{ category }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Ingredients</h2>
+    <ul>
+        {% for ingredient in recipe.ingredients %}
+        <li class="ingredient">
+            {% if ingredient.img_url %}
+            <img src="{{ ingredient.img_url }}" alt="{{ ingredient.label }} image">
+            {% endif %}
+            <span><strong>{{ ingredient.label }}:</strong> {{ ingredient.desc }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Techniques</h2>
+    <ul>
+        {% for technique in recipe.techniques %}
+        <li><strong>{{ technique.label }}:</strong> {{ technique.desc }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Similar Recipes</h2>
+    <ul>
+        {% for rel_recipe in recipe.related_recipes %}
+        <li><a href="/recipe/{{ rel_recipe.id }}">{{ rel_recipe.title }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -61,7 +61,7 @@ def getCompactRecipes(offset=0, limit=20, searchTitle=None, categoryList=None, t
     recipeList = []
     for row in result['results']['bindings']:
         recipeList.append({
-            "recipe": row['recipe']['value'],
+            "id": row['recipe']['value'].split("/")[-1],
             "title": row['title']['value'],
             "servings": row['servings']['value'],
             "categories": row['categories']['value'],
@@ -70,3 +70,152 @@ def getCompactRecipes(offset=0, limit=20, searchTitle=None, categoryList=None, t
         })
 
     return recipeList
+
+def getRecipeById(recipe_id) -> dict:
+    recipe = {}
+    # Create a connection to the GraphDB repository
+    endpoint = "http://localhost:7200"
+    client = ApiClient(endpoint=endpoint)
+    conn = GraphDBApi(client)
+    repo_name = "WS-foodista"
+
+    # get recipe, title, servings
+    query = """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdft: <http://purl.org/dc/terms/>
+    PREFIX lr: <http://linkedrecipes.org/schema/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT ?recipe ?title ?servings
+    WHERE {
+      ?recipe rdf:type lr:Recipe .
+      ?recipe rdft:title ?title .
+      OPTIONAL {?recipe lr:servings ?servings .}
+        
+      FILTER (?recipe = <http://data.kasabi.com/dataset/foodista/recipe/""" + recipe_id + """>) 
+    }
+    """
+    payload_query = {"query": query}
+    result = conn.sparql_select(body=payload_query, repo_name=repo_name)
+    result = json.loads(result)
+    for row in result['results']['bindings']:
+        recipe['id'] = row['recipe']['value'].split("/")[-1]
+        recipe['title'] = row['title']['value']
+        recipe['servings'] = row['servings']['value'] if 'servings' in row else None
+
+    # get categories
+    query = """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdft: <http://purl.org/dc/terms/>
+    PREFIX lr: <http://linkedrecipes.org/schema/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT ?category_label
+    WHERE {
+      ?recipe rdf:type lr:Recipe .
+      
+      ?recipe lr:category ?category .
+      ?category skos:prefLabel ?category_label .
+        
+      FILTER (?recipe = <http://data.kasabi.com/dataset/foodista/recipe/""" + recipe_id + """>) 
+    }
+    """
+    payload_query = {"query": query}
+    result = conn.sparql_select(body=payload_query, repo_name=repo_name)
+    result = json.loads(result)
+    recipe['categories'] = []
+    for row in result['results']['bindings']:
+        recipe['categories'].append(row['category_label']['value'])
+
+    # get ingredients
+    query = """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdft: <http://purl.org/dc/terms/>
+    PREFIX lr: <http://linkedrecipes.org/schema/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    
+    SELECT ?ingredient_label ?ingredient_desc ?ingredient_img
+    WHERE {
+      ?recipe rdf:type lr:Recipe .
+      
+      ?recipe lr:ingredient ?ingredient .
+      ?ingredient rdfs:label ?ingredient_label .
+      ?ingredient rdft:description ?ingredient_desc .
+      OPTIONAL {?ingredient foaf:depiction ?ingredient_img .}
+        
+      FILTER (?recipe = <http://data.kasabi.com/dataset/foodista/recipe/""" + recipe_id + """>) 
+    }
+    """
+    payload_query = {"query": query}
+    result = conn.sparql_select(body=payload_query, repo_name=repo_name)
+    result = json.loads(result)
+    recipe['ingredients'] = []
+    for row in result['results']['bindings']:
+        recipe['ingredients'].append({
+            "label": row['ingredient_label']['value'],
+            "desc": row['ingredient_desc']['value'],
+            "img_url": row['ingredient_img']['value'] if 'ingredient_img' in row else None
+        })
+
+    # get techniques
+    query = """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdft: <http://purl.org/dc/terms/>
+    PREFIX lr: <http://linkedrecipes.org/schema/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT ?technique_label ?technique_desc
+    WHERE {
+      ?recipe rdf:type lr:Recipe .
+      
+      ?recipe lr:uses ?technique .
+      ?technique rdfs:label ?technique_label .
+      ?technique rdft:description ?technique_desc .
+        
+      FILTER (?recipe = <http://data.kasabi.com/dataset/foodista/recipe/""" + recipe_id + """>)  
+    }
+    """
+    payload_query = {"query": query}
+    result = conn.sparql_select(body=payload_query, repo_name=repo_name)
+    result = json.loads(result)
+    recipe['techniques'] = []
+    for row in result['results']['bindings']:
+        recipe['techniques'].append({
+            "label": row['technique_label']['value'],
+            "desc": row['technique_desc']['value']
+        })
+
+    # get related recipes
+    query = """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdft: <http://purl.org/dc/terms/>
+    PREFIX lr: <http://linkedrecipes.org/schema/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT ?rel_recipe ?rel_recipe_title
+    WHERE {
+      ?recipe rdf:type lr:Recipe .
+        
+      ?recipe rdft:related ?rel_recipe .
+      ?rel_recipe rdft:title ?rel_recipe_title .
+        
+      FILTER (?recipe = <http://data.kasabi.com/dataset/foodista/recipe/""" + recipe_id + """>)
+    }
+    """
+    payload_query = {"query": query}
+    result = conn.sparql_select(body=payload_query, repo_name=repo_name)
+    result = json.loads(result)
+    recipe['related_recipes'] = []
+    for row in result['results']['bindings']:
+        recipe['related_recipes'].append({
+            "id": row['rel_recipe']['value'].split("/")[-1],
+            "title": row['rel_recipe_title']['value']
+        })
+
+    return recipe
