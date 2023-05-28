@@ -3,20 +3,21 @@
 {% block title %}Recipe Details{% endblock %}
 
 {% block content %}
-    <h1>{{ recipe.title }}</h1>
-    <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+<div class="h-recipe">
+    <h1 class="p-name">{{ recipe.title }}</h1>
+    <p><strong>Servings:</strong> <data class="p-yield">{{ recipe.servings }}</data></p>
 
     <h2>Categories</h2>
     <ul>
         {% for category in recipe.categories %}
-        <li style="padding: 0;">{{ category }}</li>
+        <li class="p-category" style="padding: 0;">{{ category }}</li>
         {% endfor %}
     </ul>
 
     <h2>Ingredients</h2>
     <ul>
         {% for ingredient in recipe.ingredients %}
-        <li class="ingredient" style="padding: 0;">
+        <li class="p-ingredient" style="padding: 0;">
             {% if ingredient.img_url %}
             <img src="{{ ingredient.img_url }}" alt="{{ ingredient.label }} image">
             {% endif %}
@@ -28,7 +29,7 @@
     <h2>Techniques</h2>
     <ul>
         {% for technique in recipe.techniques %}
-        <li style="padding: 0;"><strong>{{ technique.label }}:</strong> {{ technique.desc }}</li>
+        <li class="p-instructions" style="padding: 0;"><strong>{{ technique.label }}:</strong> {{ technique.desc }}</li>
         {% endfor %}
     </ul>
 
@@ -38,4 +39,5 @@
         <li style="padding: 0;"><a href="/recipe/{{ rel_recipe.id }}">{{ rel_recipe.title }}</a></li>
         {% endfor %}
     </ul>
+</div>
 {% endblock %}
