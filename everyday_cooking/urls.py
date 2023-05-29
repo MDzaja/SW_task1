@@ -1,4 +1,4 @@
-"""everyday_cooking URL Configuration
+"""electric_vehicles URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -26,5 +26,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('ingredients/', views.ingredients, name='ingredients'),
     path('categories/', views.categories, name='categories'),
-    path('techniques/', views.techniques, name='techniques')
+    path('techniques/', views.techniques, name='techniques'),
+    path('dbpedia-ingredients/', views.dbpedia_food, name='dbpedia-ingredients')
 ]

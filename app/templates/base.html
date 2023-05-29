@@ -1,3 +1,98 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#{% load static %}#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{% block title %}{% endblock %}</title>#}
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="{% static 'styles.css' %}">#}
+{#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>#}
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>#}
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>#}
+{#    <style>#}
+{#        body {#}
+{#            font-family: Arial, sans-serif;#}
+{#            background-color: #f2f2f2;#}
+{#        }#}
+{#        h1 {#}
+{#            text-align: center;#}
+{#            color: #333333;#}
+{#        }#}
+{#        ul {#}
+{#            list-style-type: none;#}
+{#            margin: 0;#}
+{#            padding: 0;#}
+{#        }#}
+{#        li {#}
+{#            font-size: 20px;#}
+{#            margin-bottom: 10px;#}
+{#            background-color: #ffffff;#}
+{#            padding: 10px;#}
+{#            border-radius: 5px;#}
+{#            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);#}
+{#        }#}
+{#        .topnav {#}
+{#		  background-color: #333;#}
+{#		  overflow: hidden;#}
+{#		}#}
+{#		/* Style the links inside the navigation bar */#}
+{#		.topnav a {#}
+{#		  float: left;#}
+{#		  color: #f2f2f2;#}
+{#		  text-align: center;#}
+{#		  padding: 14px 16px;#}
+{#		  text-decoration: none;#}
+{#		  font-size: 17px;#}
+{#		}#}
+{#        .card-row {#}
+{#  display: flex;#}
+{#  flex-wrap: wrap;#}
+{#}#}
+{#.backColor {#}
+{#    border: 2px solid black;#}
+{##}
+{##}
+{#}#}
+{#.backColor:hover {#}
+{#  color: red;#}
+{#}#}
+{#.card {#}
+{#  width: 33.33%;#}
+{#  padding: 20px;#}
+{#  box-sizing: border-box;#}
+{#}#}
+{##}
+{#.card img {#}
+{#  width: 100%;#}
+{#}#}
+{##}
+{#.card h2 {#}
+{#  margin-top: 10px;#}
+{#  margin-bottom: 5px;#}
+{#  font-size: 1.5rem;#}
+{#}#}
+{##}
+{#.card p {#}
+{#  font-size: 1rem;#}
+{#  line-height: 1.2;#}
+{#}#}
+{##}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{#    <div class="topnav">#}
+{#        <a class="active" href="{% url 'home' %}">Everyday cooking</a>#}
+{#        <a href="{% url 'recipes' %}">Recipes</a>#}
+{#        <a href="{% url 'ingredients' %}">Ingredients</a>#}
+{#        <a href="{% url 'categories' %}">Categories</a>#}
+{#        <a href="{% url 'techniques' %}">Techniques</a>#}
+{#    </div>#}
+{#    <main style="margin-left: 5px;">#}
+{#        {% block content %}{% endblock %}#}
+{#    </main>#}
+{#</body>#}
+{#</html>#}
+
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
@@ -32,51 +127,62 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
         .topnav {
-		  background-color: #333;
-		  overflow: hidden;
-		}
-		/* Style the links inside the navigation bar */
-		.topnav a {
-		  float: left;
-		  color: #f2f2f2;
-		  text-align: center;
-		  padding: 14px 16px;
-		  text-decoration: none;
-		  font-size: 17px;
-		}
+            background-color: #333;
+            overflow: hidden;
+        }
+        /* Style the links inside the navigation bar */
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
         .card-row {
-  display: flex;
-  flex-wrap: wrap;
-}
-.backColor {
-    border: 2px solid black;
-
-
-}
-.backColor:hover {
-  color: red;
-}
-.card {
-  width: 33.33%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.card img {
-  width: 100%;
-}
-
-.card h2 {
-  margin-top: 10px;
-  margin-bottom: 5px;
-  font-size: 1.5rem;
-}
-
-.card p {
-  font-size: 1rem;
-  line-height: 1.2;
-}
-
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .backColor {
+            border: 2px solid black;
+        }
+        .backColor:hover {
+            color: red;
+        }
+        .card {
+            width: 33.33%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card img {
+            width: 100%;
+        }
+        .card h2 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 1.5rem;
+        }
+        .card p {
+            font-size: 1rem;
+            line-height: 1.2;
+        }
     </style>
 </head>
 <body>
@@ -84,9 +190,12 @@
         <a class="active" href="{% url 'home' %}">Everyday cooking</a>
         <a href="{% url 'recipes' %}">Recipes</a>
         <a href="{% url 'ingredients' %}">Ingredients</a>
+        <a href="{% url 'dbpedia-ingredients' %}">DBpedia Ingredients</a>
         <a href="{% url 'categories' %}">Categories</a>
         <a href="{% url 'techniques' %}">Techniques</a>
     </div>
+</div>
+
     <main style="margin-left: 5px;">
         {% block content %}{% endblock %}
     </main>
