@@ -5,7 +5,7 @@ from app.repositories.categoryrepo import getDistinctCategoryLabels, getCategori
 from app.repositories.foodrepo import getDistinctIngredientLabels, getIngredients, addIngredient, updateIngredientGet, updateIngredientPost, deleteIngredient
 from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes, getRecipeById
 from app.repositories.techniquerepo import getDistinctTechniqueLabels, getTechniques
-from app.repositories.food_dbpediarepo import getFood
+from app.repositories.beverage_dbpediarepo import getBeverage
 
 
 def recipes(request):
@@ -78,6 +78,5 @@ def categories(request):
 def techniques(request):
     return render(request, "techniques.html", getTechniques(request))
 
-
-def dbpedia_food(request):
-    return render(request, "dbpedia_food.html", getFood(request))
+def dbpedia_beverages(request):
+    return render(request, "dbpedia_beverage.html", getBeverage(request))

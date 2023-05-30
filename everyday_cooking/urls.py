@@ -27,5 +27,5 @@ urlpatterns = [
     path('ingredients/', views.ingredients, name='ingredients'),
     path('categories/', views.categories, name='categories'),
     path('techniques/', views.techniques, name='techniques'),
-    path('dbpedia-ingredients/', views.dbpedia_food, name='dbpedia-ingredients')
+    path('beverages/', views.dbpedia_beverages, name='beverages')
 ]
