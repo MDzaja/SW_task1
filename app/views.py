@@ -66,7 +66,6 @@ def add_recipe(request):
     recipeTitle = request.GET.get('recipeTitle', None)
   
     categoryList = getDistinctCategoryLabels()
-    print(categoryList)
     techniqueList = getDistinctTechniqueLabels()
     ingredientList = getDistinctIngredientLabels()
 

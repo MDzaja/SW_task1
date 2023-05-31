@@ -171,7 +171,7 @@
         const selectedCategoriesInput = $('<input>').attr({
             type: 'hidden',
             name: 'selected_categories',
-            value: selectedCategories.join(', ')
+            value: selectedCategories.join(',')
         });
         form.append(selectedCategoriesInput);
 
@@ -179,7 +179,7 @@
         const selectedTechniquesInput = $('<input>').attr({
             type: 'hidden',
             name: 'selected_techniques',
-            value: selectedTechniques.join(', ')
+            value: selectedTechniques.join(',')
         });
         form.append(selectedTechniquesInput);
 
@@ -187,11 +187,11 @@
         const selectedIngredientsInput = $('<input>').attr({
             type: 'hidden',
             name: 'selected_ingredients',
-            value: selectedIngredients.join(', ')
+            value: selectedIngredients.join(',')
         });
         form.append(selectedIngredientsInput);
 
-        const description = $('<textarea>').attr({
+        const description = $('<input>').attr({
             type: 'hidden',
             name: 'description',
             value: $('textarea[name="description"]').val()
