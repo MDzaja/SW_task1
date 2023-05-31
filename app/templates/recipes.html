@@ -3,8 +3,11 @@
 {% block title %}Recipes{% endblock %}
 
 {% block content %}
+
 <div class="container">
     <h1>Recipes</h1>
+    <a href="/add-recipe"><button class="btn btn--primary" style="background-color: #4CAF50; color: white;">Add New Recipe</button></a>
+    <br/>
     <form method="GET" id="filtersForm">
         {% csrf_token %}
         <div class="form-group">

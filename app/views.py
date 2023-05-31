@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 
 from app.repositories.categoryrepo import getDistinctCategoryLabels, getCategories
 from app.repositories.foodrepo import getDistinctIngredientLabels, getIngredients, addIngredient, updateIngredientGet, updateIngredientPost, deleteIngredient
-from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes, getRecipeById
+from app.repositories.reciperepo import getCompactRecipes, getCompactRecipes, getRecipeById, insert_recipe
 from app.repositories.techniquerepo import getDistinctTechniqueLabels, getTechniques
 from app.repositories.food_dbpediarepo import getFood
 
@@ -56,6 +56,35 @@ def add_ingredient(request):
 
     return render(request, "add_ingredient.html")
 
+def add_recipe(request):
+    selectedCategoryList = request.GET.get('selected_categories', '').split(',')
+    selectedTechniqueList = request.GET.get('selected_techniques', '').split(',')
+    selectedIngredientList = request.GET.get('selected_ingredients', '').split(',')
+    selectedCategoryList = list(filter(None, selectedCategoryList))
+    selectedTechniqueList = list(filter(None, selectedTechniqueList))
+    selectedIngredientList = list(filter(None, selectedIngredientList))
+    recipeTitle = request.GET.get('recipeTitle', None)
+  
+    categoryList = getDistinctCategoryLabels()
+    print(categoryList)
+    techniqueList = getDistinctTechniqueLabels()
+    ingredientList = getDistinctIngredientLabels()
+
+    context =  {
+        "category_list": categoryList,
+        "technique_list": techniqueList,
+        "ingredient_list": ingredientList, 
+        "selected_categories": selectedCategoryList,
+        "selected_techniques": selectedTechniqueList,
+        "selected_ingredients": selectedIngredientList
+    }
+
+    return render(request, "add_recipe.html", context)
+
+
+def insert_new_recipe(request):
+    insert_recipe(request)
+    return redirect('/recipes/')
 
 def update_ingredient(request):
     if request.method == 'POST':

@@ -1,11 +1,15 @@
 import json
+import uuid
 from s4api.graphdb_api import GraphDBApi
 from s4api.swagger import ApiClient
 
+
 def getCompactRecipes(offset=0, limit=20, searchTitle=None, categoryList=None, techniqueList=None, ingredientList=None) -> list:
     # Set up the query parameters
-    category_list_string = ", ".join(f'"{category}"' for category in categoryList) if categoryList else None
-    technique_list_string = ", ".join(f'"{technique}"' for technique in techniqueList) if techniqueList else None
+    category_list_string = ", ".join(
+        f'"{category}"' for category in categoryList) if categoryList else None
+    technique_list_string = ", ".join(
+        f'"{technique}"' for technique in techniqueList) if techniqueList else None
     search_title = searchTitle.strip() if searchTitle else None
     ingredient_filters = " . ".join([
         f"FILTER EXISTS {{ ?recipe lr:ingredient ?ingredient{i} . " +
@@ -70,6 +74,7 @@ def getCompactRecipes(offset=0, limit=20, searchTitle=None, categoryList=None, t
         })
 
     return recipeList
+
 
 def getRecipeById(recipe_id) -> dict:
     recipe = {}
@@ -219,3 +224,40 @@ def getRecipeById(recipe_id) -> dict:
         })
 
     return recipe
+
+
+def insert_recipe(request):
+
+    label = request.POST.get('recipeTitle')
+    description = request.POST.get('description')
+    recipeId = str(uuid.uuid4())
+    img = "http://cloud.foodista.com/content/misc/placeholders/food_big"
+
+    query = """
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX sch: <http://linkedrecipes.org/schema/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX tags: <http://data.kasabi.com/dataset/foodista/tags/>
+        PREFIX tech: <http://data.kasabi.com/dataset/foodista/technique/>
+        PREFIX food: <http://data.kasabi.com/dataset/foodista/food/>
+        PREFIX terms: <http://purl.org/dc/terms/>
+
+        INSERT DATA {
+        recipe:%s rdf:type sch:Recipe ;
+                        sch:category %s;  # Replace tags:category1, tags:category2, tags:category3 with the desired category tags
+                        sch:ingredient %s;  # Replace food:ingredient1, food:ingredient2, food:ingredient3 with the desired ingredient URIs
+                        sch:uses %s ;  # Replace tech:technique1, tech:technique2, tech:technique3 with the desired technique URIs
+                        terms:title %s ;  # Replace "New Recipe Title" with the desired recipe title
+                        terms:description %s ;  # Replace "Recipe description goes here" with the desired recipe description
+                        foaf:depiction %s .  # Replace "http://example.com/recipe-image.jpg" with the URL of the recipe image
+        }
+        """ % (recipeId, description, label, img)
+
+    endpoint = SPARQLWrapper(
+        'http://localhost:7200/repositories/WS-foodista/statements')
+    endpoint.setMethod('POST')
+    endpoint.setRequestMethod('urlencoded')
+    endpoint.setQuery(query)
+    result = endpoint.query()
+
+    return ""
