@@ -1,0 +1,57 @@
+
+
+/* Card styles */
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  width: calc(50% - 10px);
+  box-sizing: border-box;
+}
+
+/* Beverage name styles */
+.beverage-name {
+  font-size: 24px;
+  margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Info styles */
+.info {
+  margin-bottom: 15px;
+}
+
+/* Label styles */
+.label {
+  margin-bottom: 5px;
+    display: inline;
+}
+
+/* Highlighted elements */
+.highlight {
+    background-color: lightgray;
+}
+
+
+
+
+/* Abstract styles */
+.abstract {
+    margin-top: 10px;
+}
+
+/* Abstract separator styles */
+.abstract-separator {
+    height: 1px;
+    background-color: gray;
+    margin: 10px 0;
+}
