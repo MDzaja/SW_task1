@@ -230,6 +230,10 @@ def insert_recipe(request):
 
     label = request.POST.get('recipeTitle')
     description = request.POST.get('description')
+    category_list = request.POST.get('selected_categories')
+    technique_list = request.POST.get('selected_techniques')
+    ingredient_list = request.POST.get('selected_ingredients')
+
     recipeId = str(uuid.uuid4())
     img = "http://cloud.foodista.com/content/misc/placeholders/food_big"
 
