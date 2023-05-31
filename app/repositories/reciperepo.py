@@ -128,7 +128,7 @@ def getRecipeById(recipe_id) -> dict:
     """
     payload_query = {"query": query}
     result = conn.sparql_select(body=payload_query, repo_name=repo_name)
-    
+
     result = json.loads(result)
     recipe['categories'] = []
     for row in result['results']['bindings']:
@@ -248,7 +248,8 @@ def insert_recipe(request):
     ingredient_list_string = ", ".join(
         f'"{ingredient}"' for ingredient in ingredient_list) if ingredient_list else None
 
-    recipeId = "<http://data.kasabi.com/dataset/foodista/recipe/" + str(uuid.uuid4()) + ">"
+    recipeId = "<http://data.kasabi.com/dataset/foodista/recipe/" + \
+        str(uuid.uuid4()) + ">"
     img = "http://cloud.foodista.com/content/misc/placeholders/food_big"
 
     query = f"""
@@ -296,7 +297,6 @@ def insert_recipe(request):
     for row in result['results']['bindings']:
         techniques.append(row['technique']['value'])
 
-
     query = f"""
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -321,16 +321,21 @@ def insert_recipe(request):
     ingredients = []
     for row in result['results']['bindings']:
         ingredients.append(row['ingredient']['value'])
-    
+
     techniques = [item for item in techniques if "/technique/" in item]
     ingredients = [item for item in ingredients if "/food/" in item]
     print(techniques, ingredients)
 
-    categories_string= ", ".join(categories)
-    techniques_string= ", ".join(techniques)
-    ingredients_string= ", ".join(ingredients)
+    categories = ["<" + s + ">" for s in categories]
+    techniques = ["<" + s + ">" for s in techniques]
+    ingredients = ["<" + s + ">" for s in ingredients]
 
-    query = """
+
+    categories_string = ", ".join(categories)
+    techniques_string = ", ".join(techniques)
+    ingredients_string = ", ".join(ingredients)
+
+    query = f"""
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX sch: <http://linkedrecipes.org/schema/>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -339,21 +344,21 @@ def insert_recipe(request):
         PREFIX food: <http://data.kasabi.com/dataset/foodista/food/>
         PREFIX terms: <http://purl.org/dc/terms/>
 
-        INSERT DATA {
-        %s rdf:type sch:Recipe ;
-                        sch:category <%s>; 
-                        sch:ingredient <%s>;  
-                        sch:uses <%s> ; 
-                        terms:title "%s" ; 
-                        terms:description "%s" ;  
-                        foaf:depiction "%s" . 
-        }
-        """ % (recipeId, categories_string, ingredients_string, techniques_string, label, description, img)
+        INSERT DATA {{
+            {recipeId} rdf:type sch:Recipe ;
+                {"sch:category " + categories_string + ";" if categories_string else ""}
+                {"sch:ingredient " + ingredients_string + ";" if ingredients_string else ""}
+                {"sch:uses " + techniques_string  + ";" if techniques_string else ""}
+                terms:title "{label}" ;
+                terms:description "{description}" ;
+                foaf:depiction "{img}" .
+        }}
+        """
 
+    print("THISSSSS", query)
 
-    print(query)
-
-    endpoint = SPARQLWrapper('http://localhost:7200/repositories/WS-foodista/statements')
+    endpoint = SPARQLWrapper(
+        'http://localhost:7200/repositories/WS-foodista/statements')
     endpoint.setMethod('POST')
     endpoint.setRequestMethod('urlencoded')
     endpoint.setQuery(query)
